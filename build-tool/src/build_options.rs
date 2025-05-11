@@ -65,7 +65,7 @@ impl From<PartialBuildOptions> for BuildOptions {
             lib_dirs: value.lib_dirs.unwrap_or_default(),
             libs: value.libs.unwrap_or_default(),
             output_file_name: value.output_file_name,
-            release: std::env::args().find(|arg| arg == "--release").is_some(),
+            release: std::env::args().any(|arg| arg == "--release"),
         }
     }
 }
