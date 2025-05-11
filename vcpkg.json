@@ -1,0 +1,7 @@
+{
+    "name": "estrutura-de-dados-1-lista-3",
+    "version": "0.1.0",
+    "dependencies": [
+        "catch2"
+    ]
+}
