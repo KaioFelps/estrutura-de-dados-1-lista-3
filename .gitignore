@@ -1,0 +1,10 @@
+.zig-cache
+vcpkg_installed
+build/
+o/
+tmp/
+z/
+zig-out/
+**/target/
+__build.zig
+btool
