@@ -2,21 +2,24 @@
 #include <stdexcept>
 #include <algorithm>
 #include <sstream>
-#include <stack>
+#include <assert.h>
 
-typedef struct operands_t{
-    float left_operand;
-    float right_operand;
-} Operands;
+template <typename T>
+struct operands {
+    T left_operand;
+    T right_operand;
+};
 
-Operands extract_operands_from_stack(std::stack<float>& arguments_stack)
+template <typename T>
+operands<T> extract_operands_from_stack(std::stack<T>& arguments_stack)
 {
     auto right_operand = arguments_stack.top();
     arguments_stack.pop();
+
     auto left_operand = arguments_stack.top();
     arguments_stack.pop();
 
-    return Operands {
+    return {
         .left_operand = left_operand,
         .right_operand = right_operand,
     };
@@ -80,7 +83,84 @@ float NaivePosfixCalculator::calc_posfix(std::string expression) const noexcept(
         : arguments_stack.top();
 }
 
-void NaivePosfixCalculator::check_posfix(std::vector<std::string>& expression) noexcept(false)
+std::string NaivePosfixCalculator::into_infix(std::string posfix_expr) const noexcept(false)
+{
+    const auto tokens = this->vectorize_expression(posfix_expr);
+
+    auto operands_stack = std::stack<std::string>();
+
+    auto number_buffer = std::string();
+
+    for (char input : posfix_expr)
+    {
+        if (isdigit(input))
+        {
+            number_buffer.push_back(input);
+            continue;
+        }
+
+        if (!number_buffer.empty())
+        {
+            operands_stack.push(number_buffer);
+            number_buffer.clear();
+        }
+
+        switch (input)
+        {
+            case '+': case '-':
+                NaivePosfixCalculator::prepare_infix_expr_with_precedence_as_operand(input, operands_stack);
+                break;
+            case '*': case '/':
+                NaivePosfixCalculator::prepare_infix_expr_as_operand(input, operands_stack);
+                break;
+        }
+    }
+
+    assert(operands_stack.size() == 1 && "Posfix translation should result in a stack with a single whole infix expression.");
+    return operands_stack.top();
+}
+
+std::string get_infix_expr(
+    char _operator,
+    std::stack<std::string>& operands,
+    bool surround_with_parentheses = false
+)
+{
+    assert(operands.size() >= 2 && "Program allowed operator to be called with less than 2 operands on the stack, but this should be forbidden");
+
+    auto [left_operand, right_operand] = extract_operands_from_stack(operands);
+
+    auto expr = std::stringstream();
+
+    if (surround_with_parentheses) expr << '(';
+    expr
+        << left_operand
+        << ' '
+        << _operator
+        << ' '
+        << right_operand;
+    if (surround_with_parentheses) expr << ')';
+
+    return expr.str();
+}
+
+void NaivePosfixCalculator::prepare_infix_expr_with_precedence_as_operand(
+    char _operator,
+    std::stack<std::string>& operands
+) noexcept
+{
+    operands.push(get_infix_expr(_operator, operands, true));
+}
+
+void NaivePosfixCalculator::prepare_infix_expr_as_operand(
+    char _operator,
+    std::stack<std::string>& operands
+) noexcept
+{
+    operands.push(get_infix_expr(_operator, operands));
+}
+
+void NaivePosfixCalculator::check_posfix(const std::vector<std::string>& expression) noexcept(false)
 {
     const size_t size = 4;
     const char valid_inputs[size] = {'/', '+', '*', '-'};
