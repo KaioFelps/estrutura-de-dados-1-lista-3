@@ -26,8 +26,6 @@ Operands extract_operands_from_stack(std::stack<float>& arguments_stack)
 
 std::vector<std::string> NaivePosfixCalculator::vectorize_expression(std::string expression) noexcept(false)
 {
-    NaivePosfixCalculator::check_posfix(expression);
-
     auto arguments = std::vector<std::string>();
     auto buffer = std::string();
 
@@ -44,6 +42,9 @@ std::vector<std::string> NaivePosfixCalculator::vectorize_expression(std::string
     }
 
     if (!buffer.empty()) arguments.push_back(buffer);
+
+    NaivePosfixCalculator::check_posfix(arguments);
+
     return arguments;
 }
 
@@ -81,19 +82,42 @@ float NaivePosfixCalculator::calc_posfix(std::string expression) const noexcept(
         : arguments_stack.top();
 }
 
-void NaivePosfixCalculator::check_posfix(std::string& expression) noexcept(false)
+void NaivePosfixCalculator::check_posfix(std::vector<std::string>& expression) noexcept(false)
 {
-    const size_t size = 15;
-    const char valid_inputs[size] = {'/', '+', '*', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' '};
+    const size_t size = 4;
+    const char valid_inputs[size] = {'/', '+', '*', '-'};
 
-    for (char input : expression)
+    int digits_count = 0;
+
+    for (auto& input : expression)
     {
-        auto input_is_valid = std::find(valid_inputs, valid_inputs + size, input) != valid_inputs + size;
-        if (input_is_valid) continue;
+        if (isdigit(input[0]))
+        {
+            digits_count++;
+            continue;
+        }
 
+        auto input_as_operand = input[0];
+        auto input_is_operand = std::find(valid_inputs, valid_inputs + size, input_as_operand) != valid_inputs + size;
+        if (!input_is_operand)
+        {
+            auto err_msg = std::stringstream();
+            err_msg << "Posfix expressions should only contain numbers and one of the operators '/', '+', '-' or '*', but found " << input << ".";
+            throw std::invalid_argument(err_msg.str());
+        }
+
+        digits_count--;
+
+        if (digits_count < 0)
+        {
+            throw std::invalid_argument("Posfix expression tries to execute operations without any operand left.");
+        }
+    }
+
+    if (digits_count != 1)
+    {
         auto err_msg = std::stringstream();
-        err_msg << "Posfix expressions should only contain numbers and '/', '+', '-' or '*', but found " << input << ".";
-
+        err_msg << "Posfix expressions should evaluate to exactly one value as result, but given expression finished with " << digits_count << " numbers on the stack.";
         throw std::invalid_argument(err_msg.str());
     }
 }

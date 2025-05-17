@@ -10,5 +10,5 @@ class NaivePosfixCalculator
         static std::vector<std::string> vectorize_expression(std::string expression) noexcept(false);
 
     private:
-        static void check_posfix(std::string& expression) noexcept(false);
+        static void check_posfix(std::vector<std::string>& expression) noexcept(false);
 };
