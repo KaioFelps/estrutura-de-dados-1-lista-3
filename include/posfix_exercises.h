@@ -8,11 +8,10 @@
 class NaivePosfixCalculator
 {
     public:
-        NaivePosfixCalculator() = default;
-        float calc_posfix(std::string expression) const noexcept(false);
-        std::string into_infix(std::string posfix_expr) const noexcept(false);
+        static float calc_posfix(const std::string& expression) noexcept(false);
+        static std::string into_infix(const std::string& posfix_expr) noexcept(false);
 
-        static std::vector<std::string> vectorize_expression(std::string expression) noexcept(false);
+        static std::vector<std::string> vectorize_expression(const std::string& expression) noexcept(false);
 
     private:
         static void check_posfix(const std::vector<std::string>& expression) noexcept(false);

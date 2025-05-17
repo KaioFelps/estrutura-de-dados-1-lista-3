@@ -25,7 +25,7 @@ operands<T> extract_operands_from_stack(std::stack<T>& arguments_stack)
     };
 }
 
-std::vector<std::string> NaivePosfixCalculator::vectorize_expression(std::string expression) noexcept(false)
+std::vector<std::string> NaivePosfixCalculator::vectorize_expression(const std::string& expression) noexcept(false)
 {
     auto arguments = std::vector<std::string>();
     auto buffer = std::string();
@@ -49,9 +49,9 @@ std::vector<std::string> NaivePosfixCalculator::vectorize_expression(std::string
     return arguments;
 }
 
-float NaivePosfixCalculator::calc_posfix(std::string expression) const noexcept(false)
+float NaivePosfixCalculator::calc_posfix(const std::string& expression) noexcept(false)
 {
-    const auto vectorized_expression = this->vectorize_expression(std::move(expression));
+    const auto vectorized_expression = NaivePosfixCalculator::vectorize_expression(std::move(expression));
     auto arguments_stack = std::stack<float>();
 
     for (const auto& input : vectorized_expression)
@@ -83,9 +83,9 @@ float NaivePosfixCalculator::calc_posfix(std::string expression) const noexcept(
         : arguments_stack.top();
 }
 
-std::string NaivePosfixCalculator::into_infix(std::string posfix_expr) const noexcept(false)
+std::string NaivePosfixCalculator::into_infix(const std::string& posfix_expr) noexcept(false)
 {
-    const auto tokens = this->vectorize_expression(posfix_expr);
+    const auto tokens = NaivePosfixCalculator::vectorize_expression(posfix_expr);
 
     auto operands_stack = std::stack<std::string>();
 
