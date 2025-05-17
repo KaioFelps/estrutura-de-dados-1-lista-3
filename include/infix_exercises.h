@@ -22,8 +22,16 @@ class NaiveInfixCalculator
         static float calc_infix(const std::string expression) noexcept(false);
 
     private:
-        static void handle_input(char input, OPERATORS, OPERANDS, std::string& number_buffer) noexcept(false);
-        static void solve_top_operation(OPERATORS, OPERANDS) noexcept(false);
-        static float handle_operation(float right_argument, float left_argument, char operation);
+        static void handle_input(
+            char input,
+            OPERATORS,
+            OPERANDS,
+            std::string& number_buffer
+        ) noexcept(false);
+
+        static void solve_top_operation(OPERATORS, OPERANDS, bool closes_parentheses) noexcept(false);
+        static float handle_operation(float right_argument, float left_argument, char operation) noexcept(false);
+        static void handle_operations_left(OPERATORS, OPERANDS);
+        static bool operation_should_proceed(char operation, OPERATORS);
 };
 
