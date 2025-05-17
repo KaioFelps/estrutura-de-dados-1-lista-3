@@ -4,8 +4,6 @@
 #include <sstream>
 #include <stack>
 
-#include <iostream>
-
 typedef struct operands_t{
     float left_operand;
     float right_operand;
