@@ -1,7 +1,7 @@
 #include "check_brackets.h"
 #include <stack>
 
-bool check_brackets(std::string expression)
+bool check_brackets(const std::string& expression)
 {
     using namespace std;
 

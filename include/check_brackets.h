@@ -51,4 +51,4 @@ class ParenthesesTracker
 /// REQUIRE(check_brackets("[(x + 8) * (9-2)]"));
 /// REQUIRE(!check_brackets("[(x + 8) * (9-2])"));
 /// ```
-bool check_brackets(std::string expression);
+bool check_brackets(const std::string& expression);
