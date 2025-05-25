@@ -1,4 +1,0 @@
-
-[workspace]
-members = ["build-tool"]
-resolver = "2"
