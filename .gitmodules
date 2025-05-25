@@ -1,0 +1,3 @@
+[submodule "easexx"]
+	path = easexx
+	url = git@github.com:KaioFelps/easexx.git
