@@ -9,3 +9,4 @@ zig-out/
 __build.zig
 btool
 .vscode
+exx
